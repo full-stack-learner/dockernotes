@@ -1,0 +1,71 @@
+> docker version
+> docker info
+
+> docker container run --publish 80:80 nginx
+> docker images --all
+> docker container ps
+> docker container run --publish 80:80 --detach nginx
+
+After typing above command in cmd,
+Open http://localhost:80 in Browser
+
+> docker container ls
+
+Above command will list out containers in cmd
+
+The following command is to delete container, replace [container_id] with container id
+
+> docker container rm [container_id]
+
+Let's run httpd, mysql, nginx in docker by using container
+
+> docker container run -d --name databaseserver -p 3306:3306 -e MYSQL_RANDOM_ROOT_PASSWORD=yes mysql
+> docker container log databaseserver
+> docker container run -d --name webserver -p 8080:80 httpd
+> docker container run -d --name proxyserver -p 80:80 nginx
+
+> docker container ls
+> curl localhost
+> curl localhost:8080
+
+In above commands, curl localhost is requesting to ngninx and
+curl localhost:8080 is requesting to apache
+
+> docker container stop [container_id]
+
+Above command is to stop container, replace [container_id] with container id
+
+The following commands are for
+listing out, showing details, showing performance status
+
+> docker container top [container_id]
+> docker container inspect [container_id]
+> docker container stats [container_id]
+
+> docker container run -it --name proxy nginx bash
+# ls -la
+> docker container run -it alpine sh
+# ls -la
+> docker container exec -it nginx bash
+
+Above command is to access bash of docker container nginx
+
+But I, zawmoehtike is not OK with above commands
+and the following commands work for me, zawmoehtike
+
+> docker run --name ubuntu_bash --rm -i -t ubuntu bash
+> docker container run --name proxy_server -p 80:80 nginx && docker container run --name web_server -p 8080:80 httpd
+> docker container exec -it proxy_server bash
+
+> docker network ls
+> docker network inspect [network_name]
+> docker network create [network_name]
+> docker network connect [network_name] [container_name]
+> docker network disconnect [network_name] [container_name]
+
+Above commands are for
+listing out network as list, inspecting about network, creating network, connecting and disconnecting network
+
+Replace [network_name] with network name
+
+> docker container run -d --name proxyserver -p 80:80 --network my_app_net nginx

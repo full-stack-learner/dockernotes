@@ -1,0 +1,12 @@
+> docker images
+> docker pull [image_name]:[version]
+
+Replace [version] with version but it is optional
+If version is not involved it will take latest version
+
+> docker hisotry [image_name]
+
+> docker image tag nginx zawmoehtike/nginx
+> docker image push zawmoehtike/nginx
+
+> docker image build -t [your_given_image_name] .

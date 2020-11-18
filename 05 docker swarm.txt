@@ -1,0 +1,70 @@
+
+> docker swarm init
+> docker node ls
+
+> docker swarm init --help
+> docker swarm init --advertise-addr 192.168.0.28
+
+> docker swarm join --help
+> docker swarm join --token SWMTKN-1-4ymzgsdogb34fmzvbjvsi0kft33rcua2e55vvh8xe9kltdoaxz-7lcmfyrrj6pqume9abw4nkgp1 192.168.0.28:2377
+
+> docker service create alpine ping 8.8.8.8
+> docker service ls
+> docker service ps [service_name]
+> docker container ps
+> docker service update [service_name] --replicas 3
+
+> docker service ls
+
+ID                  NAME                MODE                REPLICAS            IMAGE               PORTS
+x511cvrsikv5        lucid_swartz        replicated          3/3                 alpine:latest
+
+> docker service ps [service_name]
+
+ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE                ERROR               PORTS
+fox4p9ndynyf        lucid_swartz.1      alpine:latest       node1               Running             Running 6 minutes ago
+g3oc8tmy5id3        lucid_swartz.2      alpine:latest       node2               Running             Running about a minute ago
+f3reubwpqnwl        lucid_swartz.3      alpine:latest       node2               Running             Running about a minute ago
+
+> docker container ls
+> docker container ps
+
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+e2e052b7bc1b        alpine:latest       "ping 8.8.8.8"      7 minutes ago       Up 7 minutes                            lucid_swartz.1.fox4p9ndynyfb30cim22gt0ro
+
+Lets create mydrupal network
+
+> docker network ls
+> docker network create --driver overlay [mydrupal]
+
+Lets run postgre service by docker swarm
+in mydrupal network
+
+> docker service create --name [psql] --network [mydrupal] -e POSTGRES_PASSWORD=[mypass] postgres
+> docker service ls
+> docker service ps [psql]
+
+> docker container ls
+
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+5e9a87c5cf05        postgres:latest     "docker-entrypoint.s…"   2 minutes ago       Up 2 minutes        5432/tcp            psql.1.t5le9oa7k9nca9py8wxrx3ioa
+
+> docker container logs [psql.1.t5le9oa7k9nca9py8wxrx3ioa]
+
+Lets run drupal service by docker swarm
+in mydrupal network
+
+> docker service create --name [drupal] --network [mydrupal] -p 80:80 drupal
+
+Lets check which service is running in which node
+
+> docker service ls
+> docker service ps [service_name]
+> docker service ps [drupal]
+> docker service ps [psql]
+
+ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE            ERROR               PORTS
+t5le9oa7k9nc        psql.1              postgres:latest     node1               Running             Running 10 minutes ago
+
+ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE           ERROR               PORTS
+yof4zu1kbu5b        drupal.1            drupal:latest       node2               Running             Running 3 minutes ago
