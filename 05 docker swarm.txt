@@ -68,3 +68,36 @@ t5le9oa7k9nc        psql.1              postgres:latest     node1               
 
 ID                  NAME                IMAGE               NODE                DESIRED STATE       CURRENT STATE           ERROR               PORTS
 yof4zu1kbu5b        drupal.1            drupal:latest       node2               Running             Running 3 minutes ago
+
+> docker stack deploy -c [file_name.yml] [stack_name]
+> docker stack ls
+
+Lets copy file to remote from local machine
+to test the following command
+
+> docker stack deploy -c [file_name.yml] [stack_name]
+
+D:\zmh\docker notes\05 docker swarm\swarm-stack-2>scp stack-with-build-deploy-secret.yml ip172-18-0-23-buqb8i2g770000e35hk0@direct.labs.play-with-docker.com
+        1 file(s) copied.
+
+> docker stack ps [stack_name]
+> docker stack services [stack_name]
+
+Lets create secret in docker
+
+> echo "myusername" > myusername.txt
+> docker secret create [psql_user] myusername.txt
+> echo "mypassword" | docker secret create [psql_pass] -
+> docker secret ls
+> docker secret inspect [secret_name]
+
+Lets use created secret
+
+> docker service create --name psql --secret [psql_pass] --secret [psql_user] -e POSTGRES_PASSWORD_FILE=/run/secrets/[psql_pass] -e POSTGRES_USER_FILE=/run/secrets/[psql_user] postgres
+
+Okay then, Lets view secrets
+If container is running in [node_1], you need to run the following command in [node_1]
+
+> docker exec -it [container_name] bash
+> ls /run/secrets/
+> cat /run/secrets/[secret_name]
