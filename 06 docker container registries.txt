@@ -1,0 +1,56 @@
+
+> docker container run -p 5000:5000 --name [registry] registry
+> docker container ls
+
+> docker image ls
+> docker pull hello-world
+> docker tag hello-world 127.0.0.1:5000/hello-world
+> docker image ls
+
+REPOSITORY                   TAG                 IMAGE ID            CREATED             SIZE
+127.0.0.1:5000/hello-world   latest              bf756fb1ae65        10 months ago       13.3kB
+hello-world                  latest              bf756fb1ae65        10 months ago       13.3kB
+
+> docker push 127.0.0.1:5000/hello-world
+> docker image rm 127.0.0.1:5000/hello-world
+> docker pull 127.0.0.1:5000/hello-world
+
+Lets do above commands in docker swarm labs.play-with-docker.com
+OK firstly you need to create registry service
+
+> docker service create --name [registry] -p 5000:5000 registry
+
+Let see current running service. Yes sure you will see registry sevice is running
+
+> docker service ls
+> docker service ps [registry]
+
+Then lets see images pulled
+Pull nginx image and tag it
+See current images, you will see 127.0.0.1:5000/nginx
+
+> docker image ls
+> docker pull nginx
+> docker tag nginx 127.0.0.1:5000/nginx
+
+Push image 127.0.0.1:5000/nginx to your private registry
+
+> docker image ls
+> docker push 127.0.0.1:5000/nginx
+
+Remove your image 127.0.0.1:5000/nginx
+Then pull it from your private registry it is ok or not
+
+> docker image ls
+> docker image rm 127.0.0.1:5000/nginx
+> docker pull 127.0.0.1:5000/nginx
+> docker image ls
+
+After that create service by your image 127.0.0.1:5000/nginx from your private registry
+
+> docker service create --name my_nginx -p 80:80 127.0.0.1:5000/nginx
+> docker service ls
+
+Open in browser
+
+http://ip172-18-0-5-buqum6ag770000erhefg-5000.direct.labs.play-with-docker.com/v2/_catalog
