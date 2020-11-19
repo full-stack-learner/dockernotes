@@ -1,0 +1,53 @@
+
+> kubectl version
+> kubectl run [my-nginx] --image nginx
+
+> kubectl get pods
+> kubectl get all
+
+> kubectl delete pod [pod_name]
+
+> kubectl delete deployment [my-nginx]
+
+There has deployments 
+In deployment, there has pods
+
+> kubectl run [my-nginx] --image nginx
+> kubectl scale deployment [my-ngninx] --replicas 2
+
+----------------------------------------------------------------------------------
+
+The following is before creating replicas
+
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/my-nginx-669bb4594c-kfqv6   1/1     Running   0          11s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   11m
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/my-nginx   1/1     1            1           11s
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/my-nginx-669bb4594c   1         1         1       11s
+
+----------------------------------------------------------------------------------
+
+The following is after creating replicas
+
+NAME                            READY   STATUS    RESTARTS   AGE
+pod/my-nginx-669bb4594c-kfqv6   1/1     Running   0          72s
+pod/my-nginx-669bb4594c-xbwbv   1/1     Running   0          4s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   12m
+
+NAME                       READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/my-nginx   2/2     2            2           72s
+
+NAME                                  DESIRED   CURRENT   READY   AGE
+replicaset.apps/my-nginx-669bb4594c   2         2         2       72s
+
+----------------------------------------------------------------------------------
+
+> kubectl describe pod my-nginx
