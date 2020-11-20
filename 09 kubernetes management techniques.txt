@@ -1,0 +1,130 @@
+
+> kubectl create deployment my-nginx --image --dry-run -o yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-nginx
+  name: my-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-nginx
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: my-nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        resources: {}
+status: {}
+
+> kubectl create job my-nginx-2 --image --dry-run -o yaml
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  creationTimestamp: "2020-11-20T03:17:32Z"
+  labels:
+    controller-uid: 2d86a8cb-c070-4959-99a1-5cf014cd8ef2
+    job-name: my-nginx-2
+  name: my-nginx-2
+  namespace: default
+  resourceVersion: "4848"
+  selfLink: /apis/batch/v1/namespaces/default/jobs/my-nginx-2
+  uid: 2d86a8cb-c070-4959-99a1-5cf014cd8ef2
+spec:
+  backoffLimit: 6
+  completions: 1
+  parallelism: 1
+  selector:
+    matchLabels:
+      controller-uid: 2d86a8cb-c070-4959-99a1-5cf014cd8ef2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        controller-uid: 2d86a8cb-c070-4959-99a1-5cf014cd8ef2
+        job-name: my-nginx-2
+    spec:
+      containers:
+      - image: --dry-run
+        imagePullPolicy: IfNotPresent
+        name: my-nginx-2
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status: {}
+
+> kubectl create deployment my-nginx-3 --image nginx
+> kubectl expose deployment my-nginx-3 --port 80 --dry-run -o yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: my-nginx-3
+  name: my-nginx-3
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: my-nginx-3
+status:
+  loadBalancer: {}
+
+> kubectl delete deployment my-nginx-3
+> kubectl get all
+
+NAME                   READY   STATUS             RESTARTS   AGE
+pod/my-nginx-2-x968c   0/1     InvalidImageName   0          8m11s
+pod/my-nginx-xfcgf     0/1     InvalidImageName   0          9m48s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   42m
+
+NAME                   COMPLETIONS   DURATION   AGE
+job.batch/my-nginx     0/1           9m48s      9m48s
+job.batch/my-nginx-2   0/1           8m11s      8m11s
+
+> kubectl delete job.batch/my-nginx-2
+> kubectl delete job.batch/my-nginx
+> kubectl get all
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   42m
+
+Okay lets test old run command
+
+> kubectl run my-nginx-1 --image nginx --dry-run
+> kubectl run my-nginx-2 --image nginx --port 80 --expose --dry-run
+> kubectl run my-nginx-2 --image nginx --restart OnFailure --dry-run
+> kubectl run my-nginx-2 --image nginx --restart Never --dry-run
+> kubectl run my-nginx-2 --image nginx --schedule "*/1 * * * *" --dry-run
+
+There has Imperative and Declarative
+Imperative focus on how that program operates
+Declarative focus on what that program should accomplish
+
+Example:
+
+I'd like a cup of coffee
+
+Imperative: I boil water, insert coffee powder to cup, pour hot water to cup
+
+Declarative: "Barista, I'd like a cup of coffee" (Barista is the engine that work though steps including steps in imperative)

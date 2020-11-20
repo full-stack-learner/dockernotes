@@ -1,0 +1,41 @@
+
+Lets create ClusterIP Service
+
+> kubectl create deployment [httpenv] --image bretfisher/httpenv
+> kubectl scale deployment [httpenv] --replicas 5s
+> kubectl get all
+> kubectl get pods
+
+> kubectl get services
+> kubectl expose deployment [httpenv] --port 8888
+> kubectl get services
+
+If you are on Docker Desktop run the following command
+
+> kubectl run --generator run-pod/v1 tmp-shell --rm -it --image bretfisher/httpenv/netshoot -- bash
+# curl httpenv:8888
+
+If you are on Linux host run the following
+
+> curl [ip_of_service]:8888
+
+Lets create NodePort and LoadBalancer Service
+
+> kubectl get services
+> kubectl export deployment [httpenv] --port 8888 --name httpenv-np --type NodePort
+> kubectl get services
+
+httpenv      ClusterIP   10.99.116.60   <none>        8888/TCP         18m
+httpenv-np   NodePort    10.102.30.57   <none>        8888:30251/TCP   4s
+kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP          52m
+
+> kubectl get services
+> kubectl export deployment [httpenv] --port 8888 --name httpenv-lb --type LoadBalancer
+> kubectl get services
+
+Okay now lets clean up
+
+> kubectl delete service httpenv service httpenv-np
+> kubectl delete service httpenv-lb deployment httpenv
+
+> kubectl get namespaces
